@@ -31,8 +31,8 @@ class MyGame(arcade.Window):
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.show_view(MainMenuView())
+    window.show_view(MainMenuView())  # setup sera appelé automatiquement
     arcade.run()
-
+    
 if __name__ == "__main__":
     main()
