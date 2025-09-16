@@ -1,4 +1,5 @@
 import arcade
+from scenes import MainMenuView
 
 # Dimensions de la fenêtre
 SCREEN_WIDTH = 800
@@ -29,8 +30,8 @@ class MyGame(arcade.Window):
             print("Espace pressé !")
 
 def main():
-    game = MyGame()
-    game.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window.show_view(MainMenuView())
     arcade.run()
 
 if __name__ == "__main__":
