@@ -10,6 +10,7 @@ class AtomView(BaseView):
     def __init__(self):
         super().__init__()
         self.orbit_rotation_angle = 0
+        self.shrink_speed = 0.01
 
         self.camera = arcade.Camera2D()  # caméra principale
         self.shake_duration = 0
@@ -20,11 +21,12 @@ class AtomView(BaseView):
         self.bigatom_list = arcade.SpriteList()       # Le gros noyau
         self.atoms_exemple_list = arcade.SpriteList() # Mini-atomes en haut à droite
 
-
+        self.blackcolor = 0
         self.atomdanger_list = arcade.SpriteList() 
         self.bigatomdanger_list = arcade.SpriteList()
-        
-
+        self.isWin = False
+        self.isFinishedAtom = False
+        self.scalevar = 4
 
         # Fond
         self.background_color = arcade.color.BLACK
@@ -48,7 +50,7 @@ class AtomView(BaseView):
 
         # Background
         self.background_list = arcade.SpriteList()
-        background = arcade.Sprite("images/bgimg.png")
+        background = arcade.Sprite("images/bgatome2.png")
         background.center_x = self.window.width / 2
         background.center_y = self.window.height / 2
         background.width = self.window.width
@@ -99,7 +101,7 @@ class AtomView(BaseView):
             self.atomdanger_list.append(atom)
 
         # Gros atome
-        bigatom = arcade.Sprite("images/atome_centre.png", scale=TILE_SCALING)
+        bigatom = arcade.Sprite("images/atome_centre.png", scale=self.scalevar)
         bigatom.center_x = self.window.width / 2 - 2
         bigatom.center_y = self.window.height / 2 - 2
         self.bigatom_list.append(bigatom)
@@ -125,7 +127,7 @@ class AtomView(BaseView):
             atomex.center_y = self.window.height - 37
             atomex.scale = 0.15 if i == self.current_atom_index else 0.1
             self.atoms_exemple_list.append(atomex)
-
+        
 
     def on_draw(self):
         super().on_draw()
@@ -135,10 +137,10 @@ class AtomView(BaseView):
         # Dessiner tous les atomes
         self.background_list.draw()
         self.player_list.draw()
-        self.bigatom_list.draw()
         self.atoms_exemple_list.draw()
         self.atomdanger_list.draw()
         self.bigatomdanger_list.draw()
+
 
         # UI fixe en haut à gauche
         arcade.draw_rect_outline(arcade.rect.XYWH(120, self.window.height - 30,   # x, y du centre
@@ -224,8 +226,15 @@ class AtomView(BaseView):
         # Indiquer quel atome est actif
         active_atom = self.player_list[self.current_atom_index]
         arcade.draw_circle_outline(active_atom.center_x, active_atom.center_y, 20, arcade.color.BLACK, 2)
+        self.bigatom_list.draw()
+        if self.blackcolor > 0:
+            cam_x, cam_y = self.camera.position
+            arcade.draw_rect_filled(arcade.rect.XYWH(cam_x, cam_y,1280, 720),(0,0,0,self.blackcolor))
+
 
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            self.setup()
         if key in (arcade.key.UP, arcade.key.W):
             self.keys_held["up"] = True
         elif key in (arcade.key.DOWN, arcade.key.S):
@@ -234,11 +243,9 @@ class AtomView(BaseView):
             self.keys_held["left"] = True
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.keys_held["right"] = True
-        elif key == arcade.key.TAB:
-            # Passer à l'atome suivant
+        elif key == arcade.key.TAB and not self.isWin:  # seulement bloquer ça
             self.current_atom_index = (self.current_atom_index + 1) % len(self.player_list)
-        elif key == arcade.key.ESCAPE:
-            self.setup()
+
 
     def on_key_release(self, key, modifiers):
         if key in (arcade.key.UP, arcade.key.W):
@@ -250,8 +257,41 @@ class AtomView(BaseView):
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.keys_held["right"] = False
 
+
     def on_update(self, delta_time):
         
+        # Animation du gros atome
+        bigatom = self.bigatom_list[0]
+
+        # Prendre le scale actuel (tuple ou float)
+        current_scale = bigatom.scale
+        if isinstance(current_scale, tuple):
+            current_scale = current_scale[0]  # scale uniforme
+
+        if not self.isFinishedAtom:
+            # Rétrécir jusqu'à TILE_SCALING
+            self.shrink_speed += 0.0003
+            if current_scale > TILE_SCALING:
+                current_scale -= self.shrink_speed
+                if current_scale < TILE_SCALING:
+                    current_scale = TILE_SCALING
+
+        elif self.isFinishedAtom:
+            # Grossir après la fin
+            self.shrink_speed += 0.00003  # tu peux utiliser une vitesse différente si tu veux
+            if current_scale < 6:
+                current_scale += self.shrink_speed  # <-- ici on ajoute pour grossir
+                if current_scale > 6:
+                    current_scale = 6
+            if self.blackcolor < 245:
+                self.blackcolor += 3
+            if self.blackcolor < 254 and self.blackcolor > 244:
+                self.blackcolor += 1
+
+
+        # Réappliquer le scale
+        bigatom.scale = (current_scale, current_scale)
+
         self.orbit_rotation_angle += 1  # vitesse de rotation en degrés        
         
         repulsion_distance = 50     # distance à laquelle la répulsion commence
@@ -277,14 +317,15 @@ class AtomView(BaseView):
         dx = dy = 0
         speed = PLAYER_MOVEMENT_SPEED
 
-        if self.keys_held["up"]:
-            dy += speed
-        if self.keys_held["down"]:
-            dy -= speed
-        if self.keys_held["left"]:
-            dx -= speed
-        if self.keys_held["right"]:
-            dx += speed
+        if not self.isWin:
+            if self.keys_held["up"]:
+                dy += speed
+            if self.keys_held["down"]:
+                dy -= speed
+            if self.keys_held["left"]:
+                dx -= speed
+            if self.keys_held["right"]:
+                dx += speed
 
         active_atom = self.player_list[self.current_atom_index]
         active_atom.center_x += dx
@@ -302,7 +343,7 @@ class AtomView(BaseView):
             return all(tab)
 
         attraction_speed = 0.3
-        attraction_speed_big_atom_danger = 0.05
+        attraction_speed_big_atom_danger = 0.07
 
         # Vérifier les orbites et changer les textures
         for i, atom in enumerate(self.player_list):
@@ -326,10 +367,13 @@ class AtomView(BaseView):
         # Boost si toutes les orbites sont OK
         if all_orbits_ok(orbitsok):
             attraction_speed_big_atom_danger = 0.8
+            self.isWin = True
             if abs(self.bigatomdanger_list[0].center_x - self.window.width/2) < 1 and abs(self.bigatomdanger_list[0].center_y - self.window.height/2) < 1:
-                print("win")
+                self.isFinishedAtom = True
             if self.shake_duration == 0:
                 self.shake_duration = 20  # frames de shake (~1/3 sec)
+        else:
+            self.isWin = False
 
         # Mettre à jour la mini-vue des atomes pour montrer l'actif
         for i, atomex in enumerate(self.atoms_exemple_list):
