@@ -2,8 +2,8 @@ import arcade
 from scenes import MainMenuView
 
 # Dimensions de la fenêtre
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 700
 SCREEN_TITLE = "Mon premier jeu Arcade"
 
 class MyGame(arcade.Window):

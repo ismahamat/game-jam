@@ -19,9 +19,8 @@ class HubView(BaseView):
             arcade.key.KEY_2: ("ant", "AntView"),
             arcade.key.KEY_3: ("human_dog", "HumanDogView"),
             arcade.key.KEY_4: ("alien", "AlienView"),
-            arcade.key.KEY_5: ("moon_ship", "MoonShipView"),
-            arcade.key.KEY_6: ("galaxy", "GalaxyView"),
-            arcade.key.KEY_7: ("universe", "UniverseView"),
+            arcade.key.KEY_5: ("galaxy", "GalaxyView"),
+            arcade.key.KEY_6: ("universe", "UniverseView"),
         }
         if key in key_to_view:
             module_name, class_name = key_to_view[key]
