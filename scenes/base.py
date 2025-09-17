@@ -32,9 +32,9 @@ class BaseView(arcade.View):
         pass
 
     # ----- Utility -----
-    def show_text_center(self, text: str, color: arcade.Color = arcade.color.WHITE, size: int = 24):
-        width = self.window.width if self.window else 800
-        height = self.window.height if self.window else 600
+    def show_text_center(self, text: str, color: arcade.color = arcade.color.WHITE, size: int = 24):
+        width = self.window.width if self.window else 1280
+        height = self.window.height if self.window else 800
         arcade.draw_text(
             text,
             width / 2,
