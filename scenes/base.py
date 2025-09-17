@@ -12,8 +12,12 @@ class BaseView(arcade.View):
         super().__init__()
         self.background_color = arcade.color.BLACK
 
+    def setup(self) :
+        pass 
+
     # ----- Lifecycle -----
     def on_show_view(self):
+        self.setup()
         arcade.set_background_color(self.background_color)
         if self.window:
             self.window.set_mouse_visible(True)
