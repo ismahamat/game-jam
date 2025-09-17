@@ -1,6 +1,6 @@
 import arcade
 from .base import BaseView
-
+from .alien import AlienView
 
 class HubView(BaseView):
     def __init__(self):
@@ -9,7 +9,7 @@ class HubView(BaseView):
 
     def on_draw(self):
         super().on_draw()
-        self.show_text_center("Hub - Press 1..7 to enter a micro-game, ESC for Menu")
+        self.show_text_center("Hub - Press A to enter a micro-game, ESC for Menu")
 
     def on_key_press(self, key: int, modifiers: int):
         if not self.window:
@@ -22,11 +22,8 @@ class HubView(BaseView):
             arcade.key.KEY_5: ("galaxy", "GalaxyView"),
             arcade.key.KEY_6: ("universe", "UniverseView"),
         }
-        if key in key_to_view:
-            module_name, class_name = key_to_view[key]
-            module = __import__(f"scenes.{module_name}", fromlist=[class_name])
-            view_class = getattr(module, class_name)
-            self.window.show_view(view_class())
+        if key  == arcade.key.A:
+            self.window.show_view(AlienView())
         elif key == arcade.key.ESCAPE:
             from .menu import MenuView
             self.window.show_view(MenuView())
