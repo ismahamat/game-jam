@@ -1,6 +1,7 @@
 from .base import BaseView
 from .main_menu import MainMenuView
 from .menu import MenuView
+from .credits import CreditsView
 from .hub import HubView
 from .atom import AtomView
 from .ant import AntView
@@ -13,6 +14,7 @@ __all__ = [
     "BaseView",
     "MainMenuView",
     "MenuView",
+    "CreditsView",
     "HubView",
     "AtomView",
     "AntView",

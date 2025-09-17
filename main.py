@@ -4,7 +4,7 @@ from scenes import MainMenuView
 # Dimensions de la fenêtre
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Mon premier jeu Arcade"
+SCREEN_TITLE = "OUT OF SCALE"
 
 class MyGame(arcade.Window):
     def __init__(self):
