@@ -196,17 +196,7 @@ class UniverseView(BaseView):
             arcade.draw_text(hint, hx, hy - 9, arcade.color.BLUE, 18, anchor_x="center")
 
         if self._show_game_over:
-            self.show_text_center("Collision !"
-                    "Eh oui, tout n’était qu’illusion, mensonge et manipulation ! Tu pensais vraiment qu’on partageait quelque chose ? Que j’étais ce brave petit alien nommé Dokkae, venu gentiment t’aider dans ta quête cosmique ? Quelle farce délicieuse."
-                    "Tu n’étais qu’un vulgaire outil de pacotille, un petit jouet cassable. Qui n’a à présent, plus aucune valeur."
-                    "Il est temps que tu comprennes une chose : le monde ne tourne pas autour de toi, il ne l’a jamais fait, et il ne le fera jamais."
-                    "Tu pensais que toutes ces morts étaient des accidents ? Des hasards tragiques ? Pauvre fou…"
-                    "Chaque fin que tu as connue était voulue, planifiée, et inévitable."
-                    "Peu importe la forme que tu prends — atome, fourmis, chien ou planète — ton existence reste vide de sens."
-                    "Et maintenant, retourne à ton insignifiance. J’ai bien mieux à faire que de gaspiller mon temps avec un être aussi pathétique que toi."
-                    "Grave mon rire dans ton esprit… car c’est la dernière chose que tu entendras avant que tout ne disparaisse."
-                    "MOUHAHHAHAHA"
-                     " Appuie sur ESC pour revenir", size=15)
+            self._draw_game_over_text()
 
         # Rien ici: l'explosion est déjà dessinée plus haut
 
@@ -336,6 +326,92 @@ class UniverseView(BaseView):
         cx, cy, _, _ = self._btn_rect
         label = f"Ralentir !  (Espace)  x{self._slow_uses}"
         arcade.draw_text(label, cx, cy - 14, arcade.color.RED, 28, anchor_x="center")
+
+    def _draw_game_over_text(self):
+        """Affiche le texte de game over avec retour à la ligne automatique"""
+        if not self.window:
+            return
+        
+        w, h = self.window.width, self.window.height
+        
+        # Texte de game over divisé en paragraphes
+        game_over_lines = [
+            "Collision !",
+            "",
+            "Eh oui, tout n'était qu'illusion, mensonge et manipulation !",
+            "Tu pensais vraiment qu'on partageait quelque chose ?",
+            "Que j'étais ce brave petit alien nommé Dokkae, venu gentiment",
+            "t'aider dans ta quête cosmique ? Quelle farce délicieuse.",
+            "",
+            "Tu n'étais qu'un vulgaire outil de pacotille, un petit jouet cassable.",
+            "Qui n'a à présent, plus aucune valeur.",
+            "",
+            "Il est temps que tu comprennes une chose : le monde ne tourne",
+            "pas autour de toi, il ne l'a jamais fait, et il ne le fera jamais.",
+            "",
+            "Tu pensais que toutes ces morts étaient des accidents ?",
+            "Des hasards tragiques ? Pauvre fou…",
+            "",
+            "Chaque fin que tu as connue était voulue, planifiée, et inévitable.",
+            "",
+            "Peu importe la forme que tu prends — atome, fourmis, chien",
+            "ou planète — ton existence reste vide de sens.",
+            "",
+            "Et maintenant, retourne à ton insignifiance. J'ai bien mieux à faire",
+            "que de gaspiller mon temps avec un être aussi pathétique que toi.",
+            "",
+            "Grave mon rire dans ton esprit… car c'est la dernière chose",
+            "que tu entendras avant que tout ne disparaisse.",
+            "",
+            "MOUHAHHAHAHA",
+            "",
+            "Appuie sur ESC pour revenir"
+        ]
+        
+        # Paramètres d'affichage
+        font_size = 20
+        line_height = font_size + 4
+        total_height = len(game_over_lines) * line_height
+        
+        # Position de départ (centrée verticalement)
+        start_y = h / 2 + total_height / 2
+        
+        # Dessiner un fond semi-transparent pour la lisibilité
+        padding = 40
+        bg_width = w - 2 * padding
+        bg_height = total_height + 2 * padding
+        arcade.draw_lbwh_rectangle_filled(
+            padding, h / 2 - bg_height / 2, bg_width, bg_height,
+            (0, 0, 0, 200)  # Noir semi-transparent
+        )
+        
+        # Dessiner chaque ligne
+        for i, line in enumerate(game_over_lines):
+            y_pos = start_y - i * line_height
+            
+            # Couleur spéciale pour certaines lignes
+            if line == "Collision !":
+                color = arcade.color.RED
+                size = font_size + 4
+            elif line == "MOUHAHHAHAHA":
+                color = arcade.color.ORANGE
+                size = font_size + 2
+            elif line == "Appuie sur ESC pour revenir":
+                color = arcade.color.YELLOW
+                size = font_size - 2
+            else:
+                color = arcade.color.WHITE
+                size = font_size
+            
+            arcade.draw_text(
+                line,
+                w / 2,
+                y_pos,
+                color,
+                font_size=size,
+                anchor_x="center",
+                anchor_y="center"
+            )
 
     @staticmethod
     def _point_in_rect(x: float, y: float, rect: tuple[float, float, float, float]) -> bool:
