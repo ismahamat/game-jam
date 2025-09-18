@@ -32,6 +32,9 @@ class UniverseView(BaseView):
         self._fx = arcade.SpriteList()
         self._bg_image_list = arcade.SpriteList()
 
+        # Timer
+        self.timer = 20 # Valeur initiale
+        self.time_accumulator = 0  # Pour cumuler le temps entre les frames
         # Bouton "Ralentir !"
         # (center_x, center_y, width, height)
         self._btn_rect: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)
@@ -122,7 +125,7 @@ class UniverseView(BaseView):
         btn_w, btn_h = 380, 80
         self._btn_rect = (w / 2, h - 60, float(btn_w), float(btn_h))
         self._ui = arcade.SpriteList()
-        self._btn_border = arcade.SpriteSolidColor(int(btn_w + 6), int(btn_h + 6), arcade.color.WHITE)
+        self._btn_border = arcade.SpriteSolidColor(int(btn_w + 6), int(btn_h + 6), arcade.color.RED)
         self._btn_border.center_x, self._btn_border.center_y = self._btn_rect[0], self._btn_rect[1]
         self._btn_fill = arcade.SpriteSolidColor(int(btn_w), int(btn_h), arcade.color.DARK_RED)
         self._btn_fill.center_x, self._btn_fill.center_y = self._btn_rect[0], self._btn_rect[1]
@@ -135,7 +138,7 @@ class UniverseView(BaseView):
         help_x = w - help_w / 2 - margin
         help_y = h - help_h / 2 - margin
         self._help_rect = (help_x, help_y, float(help_w), float(help_h))
-        self._help_border = arcade.SpriteSolidColor(int(help_w + 4), int(help_h + 4), arcade.color.WHITE)
+        self._help_border = arcade.SpriteSolidColor(int(help_w + 4), int(help_h + 4), arcade.color.RED)
         self._help_border.center_x, self._help_border.center_y = help_x, help_y
         self._help_fill = arcade.SpriteSolidColor(int(help_w), int(help_h), (10, 10, 18))
         self._help_fill.center_x, self._help_fill.center_y = help_x, help_y
@@ -188,9 +191,9 @@ class UniverseView(BaseView):
             if len(self._ui) > 0:
                 self._ui.draw()
             self._draw_button()
-            hint = f"ESPACE pour ralentir  (x{self._slow_uses})"
+            hint = f"Temps restant :  {self.timer})"
             hx, hy, _, _ = self._help_rect
-            arcade.draw_text(hint, hx, hy - 9, arcade.color.WHITE, 18, anchor_x="center")
+            arcade.draw_text(hint, hx, hy - 9, arcade.color.BLUE, 18, anchor_x="center")
 
         if self._show_game_over:
             self.show_text_center("Collision ! Appuie sur ESC pour revenir", size=42)
@@ -199,6 +202,14 @@ class UniverseView(BaseView):
 
     # ----- Update -----
     def on_update(self, delta_time: float):
+        # Gérer le timer qui décrémente de 20 à 1
+        if self.timer > 1:
+            self.time_accumulator += delta_time
+
+            if self.time_accumulator >= 1.0:
+                self.timer -= 1
+                self.time_accumulator = 0
+
         # Gérer l'explosion et le texte de fin
         if self._exploding:
             if self._explosion_timer > 0.0:
@@ -314,7 +325,7 @@ class UniverseView(BaseView):
     def _draw_button(self):
         cx, cy, _, _ = self._btn_rect
         label = f"Ralentir !  (Espace)  x{self._slow_uses}"
-        arcade.draw_text(label, cx, cy - 14, arcade.color.WHITE, 28, anchor_x="center")
+        arcade.draw_text(label, cx, cy - 14, arcade.color.RED, 28, anchor_x="center")
 
     @staticmethod
     def _point_in_rect(x: float, y: float, rect: tuple[float, float, float, float]) -> bool:
