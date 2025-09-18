@@ -22,74 +22,17 @@ class PopupView(arcade.View):
         self.background_sprite_list.append(self.background)
 
         # --- Boutons ---
-        grid = UIGridLayout(column_count=1, 
-                            row_count=2, 
-                            vertical_spacing=20
-        )
+        grid = UIGridLayout(column_count=1, row_count=2, vertical_spacing=20)
 
-        next_btn = UIFlatButton(
-            x = self.window.width / 2 + 100,
-            y = self.window.height / 2 + 300,
-
-            text="Jeu suivant", 
-            width=200,
-            style={
-                'normal': UIFlatButton.UIStyle(
-                    font_size=20,
-                    font_name=('calibri', 'arial'),
-                    font_color=arcade.color.WHITE,
-                    bg=arcade.color.BLACK,
-                    border=arcade.color.WHITE,
-                    border_width=2,
-                ),
-                'hover': UIFlatButton.UIStyle(
-                    font_size=20,
-                    font_name=('calibri', 'arial'),
-                    font_color=arcade.color.BLACK,
-                    bg=arcade.color.WHITE,
-                    border=arcade.color.BLACK,
-                    border_width=2,
-                ),
-            }
-        )
+        next_btn = UIFlatButton(text="Jeu suivant", width=200)
         next_btn.on_click = self.on_next_click
         grid.add(next_btn, row=0, column=0)
 
-        quit_btn = UIFlatButton(
-            text="Quitter", 
-            width=200,
-            x = self.window.width / 2 + 150,
-            y = self.window.height / 2 + 350,
-            style={
-                'normal': UIFlatButton.UIStyle(
-                    font_size=20,
-                    font_name=('calibri', 'arial'),
-                    font_color=arcade.color.WHITE,
-                    bg=arcade.color.BLACK,
-                    border=arcade.color.WHITE,
-                    border_width=2,
-                ),
-                'hover': UIFlatButton.UIStyle(
-                    font_size=20,
-                    font_name=('calibri', 'arial'),
-                    font_color=arcade.color.BLACK,
-                    bg=arcade.color.WHITE,
-                    border=arcade.color.BLACK,
-                    border_width=2,
-                ),
-            }
-        )
+        quit_btn = UIFlatButton(text="Quitter", width=200)
         quit_btn.on_click = self.on_quit_click
         grid.add(quit_btn, row=1, column=0)
-        
-        self.ui.add(
-            UIAnchorLayout(
-                children=[grid],
-                anchor_x="center",    # Centrer horizontalement
-                anchor_y="center",    # Centrer verticalement
-                offset_y=-150         # <- descendre la grille de 150 pixels
-            )
-        )
+
+        self.ui.add(UIAnchorLayout(children=[grid]))
 
     def on_draw(self):
         self.clear()
@@ -102,7 +45,7 @@ class PopupView(arcade.View):
         arcade.draw_text(
             message,
             self.window.width / 2,
-            self.window.height / 2 + 260,
+            self.window.height / 2 + 200,
             arcade.color.BABY_POWDER,
             font_size=60,
             anchor_x="center",
