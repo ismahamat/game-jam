@@ -109,8 +109,8 @@ class AtomDialogueScene(BaseView):
             return
 
         if key == arcade.key.ENTER:
-            from .ant import AntView
-            self.window.show_view(AntView())
+            from .atom import AtomView
+            self.window.show_view(AtomView())
 
         if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1

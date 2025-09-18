@@ -108,8 +108,8 @@ class HumanDialogueScene(BaseView):
             return
 
         if key == arcade.key.ENTER:
-            from .alien import AlienView
-            self.window.show_view(AlienView())
+            from .human_dog import HumanDogView
+            self.window.show_view(HumanDogView())
 
         if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1
