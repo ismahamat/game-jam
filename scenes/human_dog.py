@@ -4,7 +4,7 @@ from pathlib import Path
 import arcade
 from .base import BaseView
 from core import play_dog_sound, play_car_crash, play_footstep
-
+from .alien import AlienView
 
 ROAD_MARGIN = 96  # height of sidewalks at top/bottom
 LEASH_LENGTH = 140.0
@@ -198,7 +198,15 @@ class HumanDogView(BaseView):
                 40,
             )
         if self.game_over and self.window:
-            self.show_text_center("Collision ! Appuie sur ESC pour revenir")
+            #self.show_text_center("Collision ! Appuie sur ESC pour revenir")
+            if not hasattr(self, "next_scene_timer"):
+                self.next_scene_timer = 300  # 5 secondes à 60 FPS
+
+            # Décrémenter le timer
+            self.next_scene_timer -= 1
+            if self.next_scene_timer <= 0:
+                # Passer à la scène suivante
+                self.window.show_view(AlienView())
 
     def _draw_background(self):
         # Kept for compatibility; no-op because background is prebuilt as sprites

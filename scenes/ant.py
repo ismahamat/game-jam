@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 from .base import BaseView
 from core import play_ambient_sound, play_footstep
+from .human_dog import HumanDogView
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -213,6 +214,14 @@ class AntView(BaseView):
         if self.game_over:
             arcade.draw_text("GAME OVER", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                              arcade.color.RED, 40, anchor_x="center")
+            if not hasattr(self, "next_scene_timer"):
+                self.next_scene_timer = 300  # 5 secondes à 60 FPS
+
+            # Décrémenter le timer
+            self.next_scene_timer -= 1
+            if self.next_scene_timer <= 0:
+                # Passer à la scène suivante
+                self.window.show_view(HumanDogView())
 
     def on_update(self, delta_time):
         if self.game_over:

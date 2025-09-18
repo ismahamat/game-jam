@@ -2,7 +2,7 @@ import arcade
 from .base import BaseView
 import random
 import math
-
+from .ant import AntView
 PLAYER_MOVEMENT_SPEED = 3
 TILE_SCALING = 0.5
 
@@ -326,6 +326,15 @@ class AtomView(BaseView):
                 self.blackcolor += 3
             if self.blackcolor < 254 and self.blackcolor > 244:
                 self.blackcolor += 1
+            
+            if not hasattr(self, "next_scene_timer"):
+                self.next_scene_timer = 300  # 5 secondes à 60 FPS
+
+            # Décrémenter le timer
+            self.next_scene_timer -= 1
+            if self.next_scene_timer <= 0:
+                # Passer à la scène suivante
+                self.window.show_view(AntView())
 
 
         # Réappliquer le scale
