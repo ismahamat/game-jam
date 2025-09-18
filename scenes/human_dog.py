@@ -3,6 +3,7 @@ import math
 from pathlib import Path
 import arcade
 from .base import BaseView
+from core import play_dog_sound, play_car_crash, play_footstep
 
 
 ROAD_MARGIN = 96  # height of sidewalks at top/bottom
@@ -63,6 +64,8 @@ class HumanDogView(BaseView):
     def on_show_view(self):
         super().on_show_view()
         self._setup_sprites()
+        # Jouer le son de chien général au début
+        play_dog_sound('general', 0.3)
 
     def _setup_sprites(self):
         width = self.window.width if self.window else 800
@@ -337,6 +340,7 @@ class HumanDogView(BaseView):
         for bone in hit_list:
             bone.remove_from_sprite_lists()
             self.score += 1
+            play_dog_sound('bark', 0.7)
         # Maintain 5 bones
         while len(self.bones) < NUM_BONES and self.window:
             self._spawn_bone(self.window.width, self.window.height)
@@ -412,6 +416,7 @@ class HumanDogView(BaseView):
         hit_cars = arcade.check_for_collision_with_list(self.dog, self.cars)
         if hit_cars:
             # Spawn explosion midway between dog and each car
+            play_car_crash(0.8)
             for car in hit_cars:
                 mid_x = (self.dog.center_x + car.center_x) / 2.0
                 mid_y = (self.dog.center_y + car.center_y) / 2.0

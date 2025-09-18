@@ -13,6 +13,7 @@ except Exception:
     _PIL_OK = False
 
 from .base import BaseView
+from core import play_ui_sound
 
 
 class MainMenuView(BaseView):
@@ -71,10 +72,13 @@ class MainMenuView(BaseView):
     # ---------- Input ----------
     def on_key_press(self, key, modifiers):
         if key == arcade.key.DOWN:
+            play_ui_sound('select')
             self._selected_index = (self._selected_index + 1) % len(self._options)
         elif key == arcade.key.UP:
+            play_ui_sound('select')
             self._selected_index = (self._selected_index - 1) % len(self._options)
         elif key in (arcade.key.ENTER, arcade.key.RETURN):
+            play_ui_sound('confirm')
             self._activate_option()
 
     # ---------- Draw ----------

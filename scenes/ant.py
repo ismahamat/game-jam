@@ -4,6 +4,7 @@ import math
 import time
 from pathlib import Path
 from .base import BaseView
+from core import play_ambient_sound, play_footstep
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -79,6 +80,9 @@ class AntView(BaseView):
             return
         width = self.window.width
         height = self.window.height
+        
+        # Jouer l'ambiance ant
+        play_ambient_sound('ant', 0.3)
 
         # Reset lists
         self._bg_list = arcade.SpriteList()
@@ -491,6 +495,10 @@ class AntView(BaseView):
         target_y = max(8, min(self.window.height - 8, self._mouse_y))
         dx = target_x - self.controlled_ant.center_x
         dy = target_y - self.controlled_ant.center_y
+        
+        # Jouer le son de pas si la fourmi bouge
+        if abs(dx) > 1 or abs(dy) > 1:
+            play_footstep(0.2)
         dist = math.hypot(dx, dy)
         if dist <= 0.5:
             return

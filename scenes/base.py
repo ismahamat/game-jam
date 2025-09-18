@@ -1,4 +1,5 @@
 import arcade
+from core import get_sound_manager, play_ui_sound
 
 
 class BaseView(arcade.View):
@@ -11,6 +12,7 @@ class BaseView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = arcade.color.BLACK
+        self.sound_manager = get_sound_manager()
 
     def setup(self):
         """Méthode de préparation de la vue (par défaut ne fait rien).
