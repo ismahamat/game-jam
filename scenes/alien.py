@@ -1,14 +1,31 @@
 import arcade, random, math
 from .base import BaseView
 from pathlib import Path
-
+from arcade.gui import (
+    UIAnchorLayout,
+    UIFlatButton,
+    UIGridLayout,
+    UIManager
+)
+from .popup_view import PopupView
 
 class AlienView(BaseView):
     def __init__(self):
         super().__init__()
 
+        self.ui = UIManager()
+        self.ui.enable()
+        # Les boutons pour la suite
+        self.nextButtonPressed = False
+        self.max_lives = 5
+        self.lives = self.max_lives
+
+        self.level = 1           # Niveau actuel
+        self.speed_base = 3.0
+
         # Image de la cible (indice visuel affiché en haut)
-        self.target_hint = arcade.Sprite("assets/tete_alien_cible.png", scale=0.2)
+        cibles = ["rouge", "bleue", "violet"]
+        self.target_hint = arcade.Sprite(f"assets/tete_alien_{cibles[self.level-1]}_cible.png", scale=0.2)
         
         # Booleen pour la popup
         self.show_popup = False
@@ -48,9 +65,10 @@ class AlienView(BaseView):
         self.target_change_timer = 0  # compteur pour changer de direction
 
         speed = 3.0  # <-- vitesse fixe pour tous
+        
 
         # La tête spéciale à trouver
-        self.target = arcade.Sprite("assets/tete_alien_cible.png", scale=0.1)
+        self.target = arcade.Sprite(f"assets/tete_alien_{cibles[self.level - 1]}_cible.png", scale=0.1)
         self.target.center_x = self.circle_x
         self.target.center_y = self.circle_y
 
@@ -79,6 +97,7 @@ class AlienView(BaseView):
                 self.alien_speeds[sprite] = [dx, dy]
 
                 self.aliens.append(sprite)
+        self.spawn_aliens()
 
     def on_show_view(self):
         super().on_show_view()
@@ -87,6 +106,8 @@ class AlienView(BaseView):
         super().on_draw()
         self.img_list.draw()
         self.show_text_center("Trouvez l'alien !",size=25, height=self.window.height- 200, width=self.window.width/4)
+        # Après ton texte "Trouvez l'alien !"
+        self.show_text_center(f"Vies : {self.lives}", size=20, height=self.window.height - 230, width=self.window.width / 4)
 
         # Positionner l'indice sous le texte
         self.target_hint.center_x = self.window.width / 4
@@ -110,47 +131,6 @@ class AlienView(BaseView):
         # Aliens
         self.aliens.draw()
 
-
-        if self.show_popup:
-            # zone rectangulaire centrée
-            w, h = 1080, 700
-            center_x = self.window.width / 2
-            center_y = self.window.height / 2
-
-            rect = arcade.Rect(
-                width=w,
-                height=h,
-                x = center_x,
-                y=center_y,
-                left=center_x - w / 2,
-                right=center_x + w / 2,
-                bottom=center_y - h / 2,
-                top=center_y + h / 2
-            )
-
-            arcade.draw_rect_filled(rect, (0, 0, 0,255)) 
-
-            # texte au milieu
-            arcade.draw_text(
-                "🎉 Gagné ! 🎉",
-                self.window.width / 2,
-                self.window.height / 2 + 40,
-                arcade.color.WHITE,
-                font_size=30,
-                anchor_x="center",
-                anchor_y="center",
-            )
-            arcade.draw_text(
-                "Appuie sur ESC pour quitter",
-                self.window.width / 2,
-                self.window.height / 2 - 30,
-                arcade.color.LIGHT_GRAY,
-                font_size=16,
-                anchor_x="center",
-                anchor_y="center",
-            )
-
-
     def on_update(self, delta_time: float):
         """Mettre à jour la position des têtes flottantes"""
         for alien in self.aliens:
@@ -158,15 +138,15 @@ class AlienView(BaseView):
 
             # --- Mouvement spécial pour la cible ---
             if alien == self.target:
-                # Ajouter une petite variation aléatoire à chaque update
+                # Variation légère pour rendre le mouvement plus vivant
                 dx += random.uniform(-0.2, 0.2)
                 dy += random.uniform(-0.2, 0.2)
 
-                # Normaliser pour garder la même vitesse globale
+                # Normaliser pour garder la vitesse du niveau
                 length = math.sqrt(dx**2 + dy**2)
                 if length > 0:
-                    dx = (dx / length) * 3.0   # 3.0 = la vitesse définie pour tous
-                    dy = (dy / length) * 3.0
+                    dx = (dx / length) * (self.speed_base + (self.level - 1) * 1.5)
+                    dy = (dy / length) * (self.speed_base + (self.level - 1) * 1.5)
 
             alien.center_x += dx
             alien.center_y += dy
@@ -197,7 +177,7 @@ class AlienView(BaseView):
 
 
 
-    def show_text_center(self, text, color=arcade.color.WHITE, size=20, height = 50, width = 50):
+    def show_text_center(self, text, color=arcade.color.WHITE, size=20, height = 50, width = 100):
         arcade.draw_text(
             text,
             width,
@@ -209,15 +189,100 @@ class AlienView(BaseView):
         )
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """Plus tard tu pourras tester si on clique sur la bonne tête"""
         aliens_clicked = arcade.get_sprites_at_point((x, y), self.aliens)
-        for alien in aliens_clicked:
-            if alien == self.target:
-                print("🎉 Gagné ! Tu as trouvé le bon alien !")
+        if self.target in aliens_clicked:
+            if self.level < 3:
+                self.level += 1
+                self.spawn_aliens()
+            else:
+                # Tous les niveaux terminés -> popup ou fin de jeu
                 self.show_popup = True
+                popup = PopupView(self)
+                self.window.show_view(popup, win=True)
+        else:
+            # Clic raté → retirer une vie
+            self.lives -= 1
+            print(f"❌ Mauvais clic ! Vies restantes : {self.lives}")
+            if self.lives <= 0:
+                print("💀 Game Over !")
+                # Afficher popup de fin de jeu
+                self.show_popup = True
+                popup = PopupView(self, win=False)
+                self.window.show_view(popup)
+
+
         
+    def create_popup_buttons(self):
+        grid = UIGridLayout(column_count=1, row_count=2, vertical_spacing=10)
+
+        next_btn = UIFlatButton(text="Jeu suivant", width=200)
+        next_btn.on_click = self.on_next_click
+        grid.add(next_btn, row=0, column=0)
+
+        quit_btn = UIFlatButton(text="Quitter", width=200)
+        quit_btn.on_click = self.on_quit_click
+        grid.add(quit_btn, row=1, column=0)
+
+        self.ui.add(UIAnchorLayout(children=[grid]))
+
     def on_key_press(self, symbol, modifiers):
         if self.show_popup and symbol == arcade.key.ESCAPE:
             arcade.close_window()
+    
+    def on_next_click(self, event):
+        print("👉 Bouton 'Jeu suivant' cliqué")
+        from .galaxy import GalaxyView
+        self.window.show_view(GalaxyView)
         
+
+    def on_quit_click(self, event):
+        print("👉 Bouton 'Quitter' cliqué")
+        arcade.exit()
+
+    def spawn_aliens(self):
+        """Crée les aliens avec vitesse adaptée au niveau et met à jour la cible"""
+        self.aliens = arcade.SpriteList()
+        self.alien_speeds = {}
+
+        # Vitesse qui augmente avec le niveau
+        speed = self.speed_base + (self.level - 1) * 1.5
+
+        cibles = ["rouge", "bleue", "violet"]
+        tete_cible = cibles[self.level-1]
+
+        # Création de la cible
+        self.target = arcade.Sprite(f"assets/tete_alien_{tete_cible}_cible.png", scale=0.1)
+        self.target.center_x = self.circle_x
+        self.target.center_y = self.circle_y
+
+        # Mise à jour de l'indice visuel
+        self.target_hint.texture = arcade.load_texture(f"assets/tete_alien_{tete_cible}_cible.png")
+
+        # Vitesse initiale de la cible
+        dir_angle = random.uniform(0, 2 * math.pi)
+        dx = math.cos(dir_angle) * speed
+        dy = math.sin(dir_angle) * speed
+        self.alien_speeds[self.target] = [dx, dy]
+
+        self.aliens.append(self.target)
+
+        # Création des autres aliens avec la même vitesse
+        colors = ["bleue", "rouge", "violet"]
+        for color in colors:
+            for i in range(25):
+                sprite = arcade.Sprite(f"assets/tete_alien_{color}.png", scale=0.1)
+                angle = random.uniform(0, 2 * math.pi)
+                radius = random.uniform(20, self.circle_r - 30)
+                sprite.center_x = self.circle_x + math.cos(angle) * radius
+                sprite.center_y = self.circle_y + math.sin(angle) * radius
+
+                dir_angle = random.uniform(0, 2 * math.pi)
+                dx = math.cos(dir_angle) * speed
+                dy = math.sin(dir_angle) * speed
+                self.alien_speeds[sprite] = [dx, dy]
+
+                self.aliens.append(sprite)
+
+    
+
 
