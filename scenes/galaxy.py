@@ -133,7 +133,6 @@ class GalaxyView(BaseView):
             self.alien[0].texture = arcade.load_texture(str(PATH / "alien_spaceship.png"))
             self.planet_names = ["HAHAHHAHA","HAHAHHAHA","HAHAHHAHA"]
             self.planet_desc = ["","",""]
-            
             self.window.show_view(UniverseView())
         else:
             # Show arrow on selected planet
