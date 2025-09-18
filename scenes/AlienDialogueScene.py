@@ -108,8 +108,8 @@ class AlienDialogueScene(BaseView):
             return
 
         if key == arcade.key.ENTER:
-            from .galaxy import GalaxyView
-            self.window.show_view(GalaxyView())
+            from .alien import AlienView
+            self.window.show_view(AlienView())
 
         if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1

@@ -108,8 +108,8 @@ class GalaxyDialogueScene(BaseView):
             return
         
         if key == arcade.key.ENTER:
-            from .universe import UniverseView
-            self.window.show_view(UniverseView())
+            from .galaxy import GalaxyView
+            self.window.show_view(GalaxyView())
 
         if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1

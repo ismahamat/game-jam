@@ -108,8 +108,8 @@ class FourmiDialogueScene(BaseView):
             return
         
         if key == arcade.key.ENTER:
-            from .human_dog import HumanDogView
-            self.window.show_view(HumanDogView())
+            from .ant import AntView
+            self.window.show_view(AntView())
 
         if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1

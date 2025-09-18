@@ -55,6 +55,11 @@ class PopupView(arcade.View):
         # Dessiner les boutons
         self.ui.draw()
 
+    def on_key_press(self, symbol, modifiers):
+        if symbol == arcade.key.ENTER:
+            from .GalaxyDialogueScene import GalaxyDialogueScene
+            self.window.show_view(GalaxyDialogueScene())
+
     def on_next_click(self, event):
         print("👉 Jeu suivant")
         self.window.show_view(GalaxyView())
