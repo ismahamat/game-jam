@@ -191,7 +191,7 @@ class UniverseView(BaseView):
             if len(self._ui) > 0:
                 self._ui.draw()
             self._draw_button()
-            hint = f"Temps restant :  {self.timer})"
+            hint = f"Temps restant :  {self.timer}"
             hx, hy, _, _ = self._help_rect
             arcade.draw_text(hint, hx, hy - 9, arcade.color.BLUE, 18, anchor_x="center")
 
