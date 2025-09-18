@@ -334,7 +334,8 @@ class AtomView(BaseView):
             self.next_scene_timer -= 1
             if self.next_scene_timer <= 0:
                 # Passer à la scène suivante
-                self.window.show_view(AntView())
+                from .FourmiDialogueScene import FourmiDialogueScene
+                self.window.show_view(FourmiDialogueScene())
 
 
         # Réappliquer le scale

@@ -221,7 +221,8 @@ class AntView(BaseView):
             self.next_scene_timer -= 1
             if self.next_scene_timer <= 0:
                 # Passer à la scène suivante
-                self.window.show_view(HumanDogView())
+                from .HumanDialogueScene import HumanDialogueScene
+                self.window.show_view(HumanDialogueScene())
 
     def on_update(self, delta_time):
         if self.game_over:

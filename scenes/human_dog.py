@@ -206,7 +206,8 @@ class HumanDogView(BaseView):
             self.next_scene_timer -= 1
             if self.next_scene_timer <= 0:
                 # Passer à la scène suivante
-                self.window.show_view(AlienView())
+                from .AlienDialogueScene import AlienDialogueScene
+                self.window.show_view(AlienDialogueScene())
 
     def _draw_background(self):
         # Kept for compatibility; no-op because background is prebuilt as sprites

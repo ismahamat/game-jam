@@ -246,8 +246,8 @@ class MainMenuView(BaseView):
     def _activate_option(self):
         option = self._options[self._selected_index]
         if option == "Start":
-            from .atom import AtomView
-            self.window.show_view(AtomView())
+            from .AtomDialogueScene import AtomDialogueScene
+            self.window.show_view(AtomDialogueScene())
         elif option == "Credit":
             from .credits import CreditsView
             self.window.show_view(CreditsView())
