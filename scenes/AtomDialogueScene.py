@@ -2,6 +2,10 @@ import os
 import arcade
 from .base import BaseView  # BaseView doit hériter de arcade.View
 from .atom import AtomView
+import os
+import arcade
+from .base import BaseView  # BaseView doit hériter de arcade.View
+from .atom import AtomView
 
 # --- Constantes ---
 SCREEN_WIDTH = 1080
@@ -19,7 +23,7 @@ PARAGRAPHS = [
     "Pour t’expliquer un peu la situation, tu dois compléter une série d'épreuves pour pouvoir te permettre de découvrir les secrets de l’univers.",
     "Ne t'inquiète pas, je serais à tes côtés à chaque instant pour te donner toutes les indications nécessaires.",
     "Le premier défi ? Placer les électrons d’un atome dans la bonne orbite autour du noyau, sans te faire toucher par les électrons libres qui bougent partout ! Sois rapide, mais calme, et surtout, n’aie pas peur d’essayer plusieurs fois.",
-    "Je sais que ce n’est pas toujours facile, mais tu n’es pas seul. Moi aussi, la première fois, j’ai pris un électron libre en pleine antenne... 😅 On va y arriver ensemble !",
+    "Je sais que ce n’est pas toujours facile, mais tu n’es pas seul. Moi aussi, la première fois, j’ai pris un électron libre en pleine antenne... On va y arriver ensemble !",
 ]
 
 
@@ -48,7 +52,7 @@ class AtomDialogueScene(BaseView):
             multiline=True,
         )
         self.hint_text = arcade.Text(
-            "[Espace/Entrée/Droite] Suivant",
+            "[Entrée] Suivant",
             x=SCREEN_WIDTH / 2,
             y=TEXT_MARGIN,
             color=arcade.color.LIGHT_GRAY,
@@ -101,25 +105,19 @@ class AtomDialogueScene(BaseView):
     def on_key_press(self, key: int, modifiers: int):
         if self._done:
             # Si le dialogue est terminé, passer à la scène AtomView
-            if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
-                atom_view = AtomView()
-                atom_view.setup()
-                from .ant import AntView
-                self.window.show_view(AntView())
+            if key == arcade.key.ENTER:
+                from .atom import AtomView
+                self.window.show_view(AtomView())
             return
 
         if key == arcade.key.ENTER:
-            from .atom import AtomView
-            self.window.show_view(AtomView())
-
-        if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1
             if self.current_paragraph_index >= len(PARAGRAPHS):
                 # Si on dépasse le nombre, on reste sur le dernier paragraphe
                 self.current_paragraph_index = len(PARAGRAPHS) - 1
                 self._done = True  # marque que le dialogue est fini
                 # Mettre à jour le texte d'aide pour indiquer comment continuer
-                self.hint_text.value = "[Espace/Entrée/Droite] Commencer le jeu"
+                self.hint_text.value = "[Entrée] Commencer le jeu"
             self.dialog_text.value = PARAGRAPHS[self.current_paragraph_index]
 
 

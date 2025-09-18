@@ -231,8 +231,8 @@ class AlienView(BaseView):
     
     def on_next_click(self, event):
         print("👉 Bouton 'Jeu suivant' cliqué")
-        from .galaxy import GalaxyView
-        self.window.show_view(GalaxyView)
+        from .GalaxyDialogueScene import GalaxyDialogueScene
+        self.window.show_view(GalaxyDialogueScene())
         
 
     def on_quit_click(self, event):

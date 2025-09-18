@@ -1,7 +1,7 @@
 import os
 import arcade
 from .base import BaseView  # BaseView doit hériter de arcade.View
-from .atom import AtomView
+
 
 # --- Constantes ---
 SCREEN_WIDTH = 1080
@@ -13,14 +13,20 @@ DIALOGUE_BOX_HEIGHT = 150
 TEXT_MARGIN = 20
 
 PARAGRAPHS = [
-    "[Transmission interstellaire établie…]",
-    "Bonjour, ami et voyageur de l’univers numérique. Je suis Dokkae, explorateur paisible venu du système stellaire de Ganul.",
-    "Je suis ici non pas pour te défier… mais pour t’accompagner et t’aider dans ton aventure :)",
-    "Pour t’expliquer un peu la situation, tu dois compléter une série d'épreuves pour pouvoir te permettre de découvrir les secrets de l’univers.",
-    "Ne t'inquiète pas, je serais à tes côtés à chaque instant pour te donner toutes les indications nécessaires.",
-    "Le premier défi ? Placer les électrons d’un atome dans la bonne orbite autour du noyau, sans te faire toucher par les électrons libres qui bougent partout ! Sois rapide, mais calme, et surtout, n’aie pas peur d’essayer plusieurs fois.",
-    "Je sais que ce n’est pas toujours facile, mais tu n’es pas seul. Moi aussi, la première fois, j’ai pris un électron libre en pleine antenne... 😅 On va y arriver ensemble !",
+    "Super ! Tu l’as trouvé ! Grâce à toi, j’ai pu transmettre mon message sans le moindre accroc et il m’a même répondu en un éclair… chose rare, vu sa lenteur habituelle. ",
+    "Je te remercie infiniment, ami voyageur. Sans toi, ce contact aurait été perdu.",
+    "Mais… ce qu’il m’a révélé est très inquiétant.",
+    "Il m’a transmis une information capitale : une guerre interplanétaire est en train de se préparer, dans l’ombre.",
+    "Quelqu’un, ou quelque chose, manipule les tensions entre civilisations, et le conflit pourrait éclater à tout moment… entraînant des milliers de mondes dans le chaos.",
+    "Nous devons agir vite. Et pour cela, j’ai besoin de ton intuition, de ton raisonnement, et surtout, de ton jugement impartial.",
+    "Trois planètes sont soupçonnées d’être à l’origine de cette instabilité :",
+    "Planète Yotz – Discrète, isolée, mais connue pour ses technologies d’espionnage très avancées.",
+    "Planète Bovi – Riche en ressources, ambitieuse, et souvent impliquée dans des conflits territoriaux.",
+    "Planète Sed – Pacifique en apparence, mais dont les archives montrent des alliances secrètes… avec des puissances douteuses.",
+    "Alors dis-moi… laquelle de ces planètes suspectes penses-tu qu’il faut surveiller en priorité ?",
+    "Réfléchis bien. Ton choix déterminera la suite de notre mission… et peut-être l’avenir de la galaxie.",
 ]
+
 
 
 class GalaxyDialogueScene(BaseView):
@@ -48,7 +54,7 @@ class GalaxyDialogueScene(BaseView):
             multiline=True,
         )
         self.hint_text = arcade.Text(
-            "[Espace/Entrée/Droite] Suivant",
+            "[Entrée galaxie] Suivant",
             x=SCREEN_WIDTH / 2,
             y=TEXT_MARGIN,
             color=arcade.color.LIGHT_GRAY,
@@ -101,33 +107,17 @@ class GalaxyDialogueScene(BaseView):
     def on_key_press(self, key: int, modifiers: int):
         if self._done:
             # Si le dialogue est terminé, passer à la scène AtomView
-            if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
-                atom_view = AtomView()
-                atom_view.setup()
-                self.window.show_view(atom_view)
+            if (key == arcade.key.ENTER):
+                from .galaxy import GalaxyView
+                self.window.show_view(GalaxyView())
             return
-        
-        if key == arcade.key.ENTER:
-            from .galaxy import GalaxyView
-            self.window.show_view(GalaxyView())
 
-        if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
+        if key == arcade.key.ENTER:
             self.current_paragraph_index += 1
             if self.current_paragraph_index >= len(PARAGRAPHS):
                 # Si on dépasse le nombre, on reste sur le dernier paragraphe
                 self.current_paragraph_index = len(PARAGRAPHS) - 1
                 self._done = True  # marque que le dialogue est fini
                 # Mettre à jour le texte d'aide pour indiquer comment continuer
-                self.hint_text.value = "[Espace/Entrée/Droite] Commencer le jeu"
+                self.hint_text.value = "[Entrée] Commencer le jeu"
             self.dialog_text.value = PARAGRAPHS[self.current_paragraph_index]
-
-
-def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    view = GalaxyDialogueScene()
-    window.show_view(view)
-    arcade.run()
-
-
-if __name__ == "__main__":
-    main()

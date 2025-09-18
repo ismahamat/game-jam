@@ -13,14 +13,15 @@ DIALOGUE_BOX_HEIGHT = 150
 TEXT_MARGIN = 20
 
 PARAGRAPHS = [
-    "[Transmission interstellaire établie…]",
-    "Bonjour, ami et voyageur de l’univers numérique. Je suis Dokkae, explorateur paisible venu du système stellaire de Ganul.",
-    "Je suis ici non pas pour te défier… mais pour t’accompagner et t’aider dans ton aventure :)",
-    "Pour t’expliquer un peu la situation, tu dois compléter une série d'épreuves pour pouvoir te permettre de découvrir les secrets de l’univers.",
-    "Ne t'inquiète pas, je serais à tes côtés à chaque instant pour te donner toutes les indications nécessaires.",
-    "Le premier défi ? Placer les électrons d’un atome dans la bonne orbite autour du noyau, sans te faire toucher par les électrons libres qui bougent partout ! Sois rapide, mais calme, et surtout, n’aie pas peur d’essayer plusieurs fois.",
-    "Je sais que ce n’est pas toujours facile, mais tu n’es pas seul. Moi aussi, la première fois, j’ai pris un électron libre en pleine antenne... 😅 On va y arriver ensemble !",
+    "Oh bravo, tu as réussi à placer tous les électrons sur leurs orbites ! Quelle précision, quelle concentration ! Je suis impressionné ! Un peu jaloux, je dois l’admettre.",
+    "Mais pas de répit pour les explorateurs cosmiques comme nous ! Une nouvelle simulation t’attend, tout aussi palpitante… et un peu plus terre-à-terre, disons.",
+    "Cette fois, tu vas incarner… une fourmi. Oui, une petite fourmi courageuse, déterminée à suivre le rythme de sa colonie à travers un monde géant et imprévisible.",
+    "Ton objectif ? Avancer sans te faire écraser par les énormes pieds d’humains qui marchent sans faire attention à ce qui se passe sous leurs pieds. C’est injuste, je sais. Mais c’est aussi l’occasion de prouver ton agilité et ton instinct de survie.",
+    "Reste attentif, sois vif… et ne perds jamais ta route.",
+    "Et rappelle-toi : même la plus petite créature peut accomplir de grandes choses. ",
+    "Je suis toujours avec toi, antennes branchées, prêt à t’aider au moindre danger. Allez, on continue !",
 ]
+
 
 
 class FourmiDialogueScene(BaseView):
@@ -48,7 +49,7 @@ class FourmiDialogueScene(BaseView):
             multiline=True,
         )
         self.hint_text = arcade.Text(
-            "[Espace/Entrée/Droite] Suivant",
+            "[Entrée] Suivant",
             x=SCREEN_WIDTH / 2,
             y=TEXT_MARGIN,
             color=arcade.color.LIGHT_GRAY,
@@ -101,24 +102,19 @@ class FourmiDialogueScene(BaseView):
     def on_key_press(self, key: int, modifiers: int):
         if self._done:
             # Si le dialogue est terminé, passer à la scène AtomView
-            if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
-                atom_view = AtomView()
-                atom_view.setup()
-                self.window.show_view(atom_view)
+            if key == arcade.key.ENTER:
+                from .ant import AntView
+                self.window.show_view(AntView())
             return
-        
-        if key == arcade.key.ENTER:
-            from .ant import AntView
-            self.window.show_view(AntView())
 
-        if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
+        if key == arcade.key.ENTER:
             self.current_paragraph_index += 1
             if self.current_paragraph_index >= len(PARAGRAPHS):
                 # Si on dépasse le nombre, on reste sur le dernier paragraphe
                 self.current_paragraph_index = len(PARAGRAPHS) - 1
                 self._done = True  # marque que le dialogue est fini
                 # Mettre à jour le texte d'aide pour indiquer comment continuer
-                self.hint_text.value = "[Espace/Entrée/Droite] Commencer le jeu"
+                self.hint_text.value = "[Entrée] Commencer le jeu"
             self.dialog_text.value = PARAGRAPHS[self.current_paragraph_index]
 
 

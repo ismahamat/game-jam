@@ -1,7 +1,8 @@
 import arcade
 from pathlib import Path
+
+from .UniversDialogueScene import UniversDialogueScene
 from .base import BaseView
-from .universe import UniverseView
 
 PATH = Path(__file__).resolve().parent.parent / "assets" 
 
@@ -133,7 +134,7 @@ class GalaxyView(BaseView):
             self.alien[0].texture = arcade.load_texture(str(PATH / "alien_spaceship.png"))
             self.planet_names = ["HAHAHHAHA","HAHAHHAHA","HAHAHHAHA"]
             self.planet_desc = ["","",""]
-            self.window.show_view(UniverseView())
+            self.window.show_view(UniversDialogueScene())
         else:
             # Show arrow on selected planet
             self.arrow_list[self.selected_index].visible = True

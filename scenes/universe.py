@@ -196,7 +196,17 @@ class UniverseView(BaseView):
             arcade.draw_text(hint, hx, hy - 9, arcade.color.BLUE, 18, anchor_x="center")
 
         if self._show_game_over:
-            self.show_text_center("Collision ! Appuie sur ESC pour revenir", size=42)
+            self.show_text_center("Collision !"
+                    "Eh oui, tout n’était qu’illusion, mensonge et manipulation ! Tu pensais vraiment qu’on partageait quelque chose ? Que j’étais ce brave petit alien nommé Dokkae, venu gentiment t’aider dans ta quête cosmique ? Quelle farce délicieuse."
+                    "Tu n’étais qu’un vulgaire outil de pacotille, un petit jouet cassable. Qui n’a à présent, plus aucune valeur."
+                    "Il est temps que tu comprennes une chose : le monde ne tourne pas autour de toi, il ne l’a jamais fait, et il ne le fera jamais."
+                    "Tu pensais que toutes ces morts étaient des accidents ? Des hasards tragiques ? Pauvre fou…"
+                    "Chaque fin que tu as connue était voulue, planifiée, et inévitable."
+                    "Peu importe la forme que tu prends — atome, fourmis, chien ou planète — ton existence reste vide de sens."
+                    "Et maintenant, retourne à ton insignifiance. J’ai bien mieux à faire que de gaspiller mon temps avec un être aussi pathétique que toi."
+                    "Grave mon rire dans ton esprit… car c’est la dernière chose que tu entendras avant que tout ne disparaisse."
+                    "MOUHAHHAHAHA"
+                     " Appuie sur ESC pour revenir", size=15)
 
         # Rien ici: l'explosion est déjà dessinée plus haut
 
@@ -292,8 +302,8 @@ class UniverseView(BaseView):
     # ----- Input -----
     def on_key_press(self, key: int, modifiers: int):
         if key == arcade.key.ESCAPE and self.window:
-            from .menu import MenuView
-            self.window.show_view(MenuView())
+            from .main_menu import MainMenuView
+            self.window.show_view(MainMenuView())
             return
         if key == arcade.key.SPACE:
             # Ralentissement court uniquement à l'appui (pas en maintien)

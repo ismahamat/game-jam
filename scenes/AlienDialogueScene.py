@@ -13,18 +13,20 @@ DIALOGUE_BOX_HEIGHT = 150
 TEXT_MARGIN = 20
 
 PARAGRAPHS = [
-    "[Transmission interstellaire établie…]",
-    "Bonjour, ami et voyageur de l’univers numérique. Je suis Dokkae, explorateur paisible venu du système stellaire de Ganul.",
-    "Je suis ici non pas pour te défier… mais pour t’accompagner et t’aider dans ton aventure :)",
-    "Pour t’expliquer un peu la situation, tu dois compléter une série d'épreuves pour pouvoir te permettre de découvrir les secrets de l’univers.",
-    "Ne t'inquiète pas, je serais à tes côtés à chaque instant pour te donner toutes les indications nécessaires.",
-    "Le premier défi ? Placer les électrons d’un atome dans la bonne orbite autour du noyau, sans te faire toucher par les électrons libres qui bougent partout ! Sois rapide, mais calme, et surtout, n’aie pas peur d’essayer plusieurs fois.",
-    "Je sais que ce n’est pas toujours facile, mais tu n’es pas seul. Moi aussi, la première fois, j’ai pris un électron libre en pleine antenne... 😅 On va y arriver ensemble !",
+    "Oh non… mince. Te faire percuter comme ça, ça pique un peu, pour toi comme pour moi ! J’ai presque senti le choc jusque dans mes antennes. ",
+    "Mais eh, ce n’est pas un échec. Juste une autre expérience de plus sur ton carnet d’explorateur.",
+    "On va dire que l’incarnation physique, ce n’est pas encore ton truc… et ce n’est pas grave du tout ! Tu as d’autres qualités bien plus précieuses : ta mémoire, ton sens de l’observation, et ta capacité à garder ton calme dans le chaos.",
+    "Et justement… c’est ce dont j’ai besoin maintenant.",
+    "Écoute bien : l’un de mes confrères Ganuliens s’est égaré. Il était censé me retrouver pour une réunion importante sur notre planète… mais il s’est perdu dans une foule d’aliens lors d’un grand rassemblement interespèces sur Ganul, et je ne parviens plus à capter son signal précisément.",
+    "J’ai besoin de toi, de tes yeux et de ton attention, pour m’aider à le retrouver. Je vais t’afficher sa photo dans un instant — garde bien son apparence en tête.",
+    "Ta mission est de le repérer parmi tous les visages. Ignore les distractions, concentre-toi sur les détails. Il a un air un peu distrait, mais on l’aime bien. Et j’ai un message très important à lui faire passer.",
+    "Tu es prêt ? Respire un bon coup, nettoie ta visière, et prépare-toi à scanner la foule.",
+    "On compte sur toi… surtout lui, vu son sens de l’orientation.",
 ]
 
 
 class AlienDialogueScene(BaseView):
-    def __init__(self, scene, text):
+    def __init__(self):
         super().__init__()
         arcade.set_background_color(arcade.color.BLUEBERRY)
 
@@ -48,7 +50,7 @@ class AlienDialogueScene(BaseView):
             multiline=True,
         )
         self.hint_text = arcade.Text(
-            "[Espace/Entrée/Droite] Suivant",
+            "[Entrée] Suivant",
             x=SCREEN_WIDTH / 2,
             y=TEXT_MARGIN,
             color=arcade.color.LIGHT_GRAY,
@@ -79,7 +81,6 @@ class AlienDialogueScene(BaseView):
 
         self.sprites.append(self.alien_sprite)
 
-
     def on_draw(self):
         self.clear()
         self.sprites.draw()
@@ -101,33 +102,26 @@ class AlienDialogueScene(BaseView):
     def on_key_press(self, key: int, modifiers: int):
         if self._done:
             # Si le dialogue est terminé, passer à la scène AtomView
-            if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
-                atom_view = AtomView()
-                atom_view.setup()
-                self.window.show_view(atom_view)
+            if key == arcade.key.ENTER:
+                from .alien import AlienView
+                self.window.show_view(AlienView())
             return
 
         if key == arcade.key.ENTER:
-            from .alien import AlienView
-            self.window.show_view(AlienView())
-
-        if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1
             if self.current_paragraph_index >= len(PARAGRAPHS):
                 # Si on dépasse le nombre, on reste sur le dernier paragraphe
                 self.current_paragraph_index = len(PARAGRAPHS) - 1
                 self._done = True  # marque que le dialogue est fini
                 # Mettre à jour le texte d'aide pour indiquer comment continuer
-                self.hint_text.value = "[Espace/Entrée/Droite] Commencer le jeu"
+                self.hint_text.value = "[Entrée] Commencer le jeu"
             self.dialog_text.value = PARAGRAPHS[self.current_paragraph_index]
-
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    view = AlienDialogueScene()
+    view = AtomDialogueScene()
     window.show_view(view)
     arcade.run()
-
 
 if __name__ == "__main__":
     main()

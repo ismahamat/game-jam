@@ -1,32 +1,40 @@
 import os
 import arcade
 from .base import BaseView  # BaseView doit hériter de arcade.View
-from .atom import AtomView
+
 
 # --- Constantes ---
 SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Fourmi Dialogue Scene"
+SCREEN_TITLE = "Alien Dialogue Scene"
 
 ALIEN_SCALE = 0.5
 DIALOGUE_BOX_HEIGHT = 150
 TEXT_MARGIN = 20
 
 PARAGRAPHS = [
-    "Oh mince, la fourmi n’était peut-être pas ton point fort finalement.",
-    "Mais ce n’est pas grave, vraiment. Dis-toi que toute l’agilité que tu as développée n’a pas été vaine — tu l’as gravée dans ton instinct.",
-    "Et maintenant, il est temps de passer à un tout nouveau corps, un peu plus grand, un peu plus poilu… et clairement plus gourmand !",
-    "Bienvenue dans la peau d’un chien ! ",
-    "Fidèle, joueur, attaché à son maître… mais avec un soupçon de liberté en plus, et surtout : des nonos à grignoter ! Eh oui, cette fois, tu peux courir, flairer, sauter, et surtout : profiter. C’est ta récompense bien méritée.",
-    "Mais attention, ami à quatre pattes : le monde des humains est toujours aussi imprévisible…",
-    "Des voitures passent à toute vitesse, sans jamais regarder au ras du sol. Et crois-moi, tu ne veux pas savoir ce que ça fait de se faire \"croquer\" les doigts par un pare-chocs… ",
-    "Sois rapide, sois malin, et surtout… n’oublie jamais d’agiter la queue de temps en temps. Ça aide à garder le moral.",
-    "Allez, je te laisse explorer ce nouveau défi. Mais ne t’inquiète pas : je reste en ligne, prêt à intervenir si jamais tu te retrouves le museau dans une poubelle. 😄",
+    "Tu ne voulais pas la garder planète ? Oh non mince, j’ai mal compris ce que tu voulais dire. Après ce n’était pas une planète qui te tenait à cœur, si ?",
+    "Ne t’en fais pas, le jeu n’est pas encore terminé !",
+    "Pour la prochaine épreuve, tu dois à tout prix éviter la collision des deux trous noirs en cliquant sur espace. Tu dois tenir 20 secondes pour pouvoir survivre ! Je compte sur toi, l’avenir de l’univers repose sur toi !",
+    "BOOOOM ",
+    "Oh… euh… tu ne voulais pas qu’on garde la planète, hein ?",
+    "…Oh non… Attends, j’ai mal compris ce que tu voulais dire ? Tu voulais dire que la planète responsable était le [NomPlanèteChoisi]… et pas les deux autres ?! ",
+    "Aïe.",
+    "Bon… après tout, ce n’était pas comme si ces planètes comptaient vraiment pour toi… si ? Non ?",
+    "Écoute, pas de panique. Le jeu n’est pas encore terminé, et l’univers est encore récupérable.",
+    "Et justement, pour redresser tout ça, j’ai une mission cruciale pour toi.",
+    "Deux trous noirs sont en train de dériver dangereusement l’un vers l’autre.",
+    "Leur collision provoquerait une réaction en chaîne… capable de déchirer l’espace-temps sur 42 dimensions. Autrement dit : gros problème.",
+    "Ta tâche :",
+    "Appuie sur espace au bon moment pour éviter leur collision, encore et encore.",
+    "Tiens bon pendant 20 secondes. Pas une de moins.",
+    "Ta précision et ton sang-froid sont la dernière ligne de défense.",
+    "Je compte sur toi.",
+    "L’avenir de l’univers repose sur toi.",
+    "Et cette fois… essaie de ne pas faire exploser quoi que ce soit, d’accord ?",
 ]
 
-
-
-class HumanDialogueScene(BaseView):
+class UniversDialogueScene(BaseView):
     def __init__(self):
         super().__init__()
         arcade.set_background_color(arcade.color.BLUEBERRY)
@@ -104,9 +112,9 @@ class HumanDialogueScene(BaseView):
     def on_key_press(self, key: int, modifiers: int):
         if self._done:
             # Si le dialogue est terminé, passer à la scène AtomView
-            if (key == arcade.key.ENTER):
-                from .human_dog import HumanDogView
-                self.window.show_view(HumanDogView())
+            if key == arcade.key.ENTER:
+                from .universe import UniverseView
+                self.window.show_view(UniverseView())
             return
 
         if key == arcade.key.ENTER:
@@ -122,7 +130,7 @@ class HumanDialogueScene(BaseView):
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    view = HumanDialogueScene()
+    view = AtomDialogueScene()
     window.show_view(view)
     arcade.run()
 

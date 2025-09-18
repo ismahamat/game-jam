@@ -1,6 +1,6 @@
 import arcade
 from arcade.gui import UIManager, UIAnchorLayout, UIGridLayout, UIFlatButton
-from .galaxy import GalaxyView
+from .GalaxyDialogueScene import GalaxyDialogueScene
 
 class PopupView(arcade.View):
     def __init__(self, parent_view, win=True):
@@ -57,12 +57,11 @@ class PopupView(arcade.View):
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ENTER:
-            from .GalaxyDialogueScene import GalaxyDialogueScene
             self.window.show_view(GalaxyDialogueScene())
 
     def on_next_click(self, event):
         print("👉 Jeu suivant")
-        self.window.show_view(GalaxyView())
+        self.window.show_view(GalaxyDialogueScene())
 
     def on_quit_click(self, event):
         print("👉 Quitter")
