@@ -4,8 +4,8 @@ from .base import BaseView  # BaseView doit hériter de arcade.View
 from .atom import AtomView
 
 # --- Constantes ---
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Alien Dialogue Scene"
 
 ALIEN_SCALE = 0.5
@@ -23,8 +23,8 @@ PARAGRAPHS = [
 ]
 
 
-class AlienDialogueScene(BaseView):
-    def __init__(self, scene, text):
+class AtomDialogueScene(BaseView):
+    def __init__(self):
         super().__init__()
         arcade.set_background_color(arcade.color.BLUEBERRY)
 
@@ -104,12 +104,13 @@ class AlienDialogueScene(BaseView):
             if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
                 atom_view = AtomView()
                 atom_view.setup()
-                self.window.show_view(atom_view)
+                from .ant import AntView
+                self.window.show_view(AntView())
             return
 
         if key == arcade.key.ENTER:
-            from .alien import AlienView
-            self.window.show_view(AlienView())
+            from .atom import AtomView
+            self.window.show_view(AtomView())
 
         if key in (arcade.key.SPACE, arcade.key.ENTER, arcade.key.RIGHT):
             self.current_paragraph_index += 1
@@ -124,7 +125,7 @@ class AlienDialogueScene(BaseView):
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    view = AlienDialogueScene()
+    view = AtomDialogueScene()
     window.show_view(view)
     arcade.run()
 
